@@ -70,7 +70,7 @@ class TicTacToeApp(CommandLineApp):
 		"""
 		self.print_board()
 		move = None
-		print "moveCounter:"+str(self.move_counter)
+		# print "moveCounter:"+str(self.move_counter)
 		while not move:
 			try: 
 				input_move = int(input("Where would you like to place your '" + self.get_current_player() + "'? "))
@@ -83,6 +83,9 @@ class TicTacToeApp(CommandLineApp):
 		return move
 
 	def get_computer_move(self):
+		"""
+		Currently this implemenation simply takes the firts available spot.
+		"""
 		print "computer is thinking..."
 		for x in range(1,10):
 			if self.board[x-1] not in PLAYERS:
