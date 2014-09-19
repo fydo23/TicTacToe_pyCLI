@@ -44,6 +44,9 @@ class TicTacToeApp(CommandLineApp):
 	def get_current_player(self):
 		return PLAYERS[self.current_player]
 
+	def get_opponent_player(self):
+		return PLAYERS[(self.current_player + 1) % 2]
+
 	def play(self):
 		if self.get_current_player() == self.user_player:
 			move = self.get_user_move()
@@ -87,11 +90,72 @@ class TicTacToeApp(CommandLineApp):
 		Currently this implemenation simply takes the firts available spot.
 		"""
 		print "computer is thinking..."
+		#can I win?
 		for x in range(1,10):
 			if self.board[x-1] not in PLAYERS:
-				print "computer placed " + self.get_current_player() + " in position " + str(x)
-				return x
+				board = list(self.board)
+				board[x-1] = self.get_current_player()
+				if ((board[0] == board[1] == board[2]) or 
+					(board[3] == board[4] == board[5]) or
+					(board[6] == board[7] == board[8]) or 
+					(board[0] == board[3] == board[6]) or
+					(board[1] == board[4] == board[7]) or
+					(board[2] == board[5] == board[8]) or
+					(board[0] == board[4] == board[8]) or
+					(board[2] == board[4] == board[6])):
+						return x
 
+		#can I block?
+		for x in range(1,10):
+			if self.board[x-1] not in PLAYERS:
+				board = list(self.board)
+				board[x-1] = self.get_opponent_player()
+				if ((board[0] == board[1] == board[2]) or 
+					(board[3] == board[4] == board[5]) or
+					(board[6] == board[7] == board[8]) or 
+					(board[0] == board[3] == board[6]) or
+					(board[1] == board[4] == board[7]) or
+					(board[2] == board[5] == board[8]) or
+					(board[0] == board[4] == board[8]) or
+					(board[2] == board[4] == board[6])):
+						return x
+		
+		#can I take the center?
+		if self.board[4] not in PLAYERS:
+			return 5
+		
+		#can I take a corner (with most possible wins)?
+		pos_wins = (None, 0)
+		for x in [1,3,7,9]:
+			if self.board[x-1] not in PLAYERS:
+				wins_at_x = self.get_possible_win_count(x)
+				if wins_at_x >= pos_wins[1]:
+					pos_wins = (x,wins_at_x)
+		if pos_wins[0]:
+			return pos_wins[0]
+		
+		#go anywhere with most wins.
+		for x in [2,4,6,8]:
+			if self.board[x-1] not in PLAYERS:
+				wins_at_x = self.get_possible_win_count(x)
+				if wins_at_x >= pos_wins[1]:
+					pos_wins = (x,wins_at_x)
+		return pos_wins[0]
+
+
+	def get_possible_win_count(self,position):
+		all_winners = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
+		winners = []
+		for pos_winner in all_winners:
+			good_winner = True
+			for x in range(1,4):
+				if self.board[pos_winner[x-1]-1] == self.get_opponent_player():
+					good_winner = False
+			if good_winner:
+				winners.append(pos_winner)
+		return len(winners)
+
+		
 	def test_winners(self):
 		board = self.board
 		"""
