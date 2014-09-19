@@ -124,25 +124,21 @@ class TicTacToeApp(CommandLineApp):
 		if self.board[4] not in PLAYERS:
 			return 5
 		
-		#can I take a corner (with most possible wins)?
+		#take square with most possible wins?
 		pos_wins = (None, 0)
-		for x in [1,3,7,9]:
+		for x in range(1,10):
 			if self.board[x-1] not in PLAYERS:
 				wins_at_x = self.get_possible_win_count(x)
-				if wins_at_x >= pos_wins[1]:
+				if wins_at_x > pos_wins[1]:
 					pos_wins = (x,wins_at_x)
 		if pos_wins[0]:
 			return pos_wins[0]
-		
-		#go anywhere with most wins.
-		for x in [2,4,6,8]:
+
+		for x in range(1,10):
 			if self.board[x-1] not in PLAYERS:
-				wins_at_x = self.get_possible_win_count(x)
-				if wins_at_x >= pos_wins[1]:
-					pos_wins = (x,wins_at_x)
-		return pos_wins[0]
+				return x
 
-
+	
 	def get_possible_win_count(self,position):
 		all_winners = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
 		winners = []
