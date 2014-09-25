@@ -12,6 +12,8 @@ HOW TO PLAY
 
 To run the game, change into the folder containing this file and run `$ Python playTTT.py`
 
+This game also runs as computer vs. computer simulation if you run `$ Python playTTT.py -n`, but be warned, it's always the same!
+
 AUTHORS
 ============
 Fyodor Wolf
