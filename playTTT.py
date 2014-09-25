@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+	#!/usr/bin/env python
 from cli.app import CommandLineApp
-from game.objects import Engine
+from game.engine import Engine
 
 class TicTacToeApp(CommandLineApp):
 

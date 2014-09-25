@@ -1,3 +1,5 @@
+from board import Board
+
 PLAYERS = ["X", "O"]
 
 class Player:
@@ -40,7 +42,8 @@ class User(Player):
 					raise ValueError()
 			except ValueError:
 				print "invalid input"
-		return board.set_position(move-1, self._player)
+		board[move-1] = self._player
+		return
 
 
 class Computer(Player):
@@ -52,57 +55,36 @@ class Computer(Player):
 		"""
 		Currently this implemenation simply takes the firts available spot.
 		"""
+
+		#stats = (pos, pos_wins, is_win)
+		my_best_move = board.get_best_move(self._player)
 		print "computer is thinking..."
-		#can I win?
-		for x in range(1,10):
-			if board[x-1] not in PLAYERS:
-				_board = list(board)
-				_board[x-1] = self._player
-				if ((_board[0] == _board[1] == _board[2]) or 
-					(_board[3] == _board[4] == _board[5]) or
-					(_board[6] == _board[7] == _board[8]) or 
-					(_board[0] == _board[3] == _board[6]) or
-					(_board[1] == _board[4] == _board[7]) or
-					(_board[2] == _board[5] == _board[8]) or
-					(_board[0] == _board[4] == _board[8]) or
-					(_board[2] == _board[4] == _board[6])):
-						board.set_position(x-1,self._player)
-						return
-
-		#can I block?
-		for x in range(1,10):
-			if board[x-1] not in PLAYERS:
-				_board = list(board)
-				_board[x-1] = self.get_opponent_player()
-				if ((_board[0] == _board[1] == _board[2]) or 
-					(_board[3] == _board[4] == _board[5]) or
-					(_board[6] == _board[7] == _board[8]) or 
-					(_board[0] == _board[3] == _board[6]) or
-					(_board[1] == _board[4] == _board[7]) or
-					(_board[2] == _board[5] == _board[8]) or
-					(_board[0] == _board[4] == _board[8]) or
-					(_board[2] == _board[4] == _board[6])):
-						board.set_position(x-1,self._player)
-						return
-		
-		#can I take the center?
-		if board[4] not in PLAYERS:
-			board.set_position(4,self._player)
-			return
-		
-		#take square with most possible wins?
-		pos_wins = (None, 0)
-		for x in range(1,10):
-			if board[x-1] not in PLAYERS:
-				wins_at_x = board.get_possible_win_count(x, self._player)
-				if wins_at_x > pos_wins[1]:
-					pos_wins = (x,wins_at_x)
-		if pos_wins[0]:
-			board.set_position(pos_wins[0]-1,self._player)
+		if my_best_move[2]:
+			print "I CAN WIN!!!"
+			board[my_best_move[0]] = self._player
 			return
 
-		for x in range(1,10):
-			if board[x-1] not in PLAYERS:
-				board.set_position(x-1,self._player)
+		op_best_move = board.get_best_move(self.get_opponent_player())
+		if op_best_move[2]:
+			print "Blocked you."
+			board[op_best_move[0]] = self._player
+			return
+
+		# for every available square, play out the next move and see if there's a better option.
+		for x in board.get_open_tiles():
+			testBoard = Board(board)
+			testBoard[x] = self._player # mock my move.
+			new_op_move = testBoard.get_best_move(self.get_opponent_player())
+			if not new_op_move[0]: continue
+			testBoard[new_op_move[0]] = self.get_opponent_player() # mock your best move.
+			my_new_move = testBoard.get_best_move(self._player)
+			if not my_new_move[0]: continue
+			if my_new_move[2] or (my_new_move[1] > my_best_move[1] and not new_op_move[2]):
+				board[ my_new_move[0]] = self._player
 				return
+		
+		board[my_best_move[0]] = self._player
+		return
+
+
 
