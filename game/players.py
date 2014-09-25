@@ -57,31 +57,46 @@ class Computer(Player):
 		"""
 
 		#stats = (pos, pos_wins, is_win)
-		my_best_move = board.get_best_move(self._player)
 		print "computer is thinking..."
+
+		tempBoard = Board(board)
+
+		# get my best move.
+		my_best_move = tempBoard.get_best_move(self._player)
 		if my_best_move[2]:
 			print "I CAN WIN!!!"
 			board[my_best_move[0]] = self._player
 			return
 
-		op_best_move = board.get_best_move(self.get_opponent_player())
+		# mock my move.
+		tempBoard[my_best_move[0]] = self._player 
+
+		# get opponents best move
+		op_best_move = tempBoard.get_best_move(self.get_opponent_player())
 		if op_best_move[2]:
 			print "Blocked you."
 			board[op_best_move[0]] = self._player
 			return
 
-		# for every available square, play out the next move and see if there's a better option.
-		for x in board.get_open_tiles():
-			testBoard = Board(board)
-			testBoard[x] = self._player # mock my move.
-			new_op_move = testBoard.get_best_move(self.get_opponent_player())
-			if not new_op_move[0]: continue
-			testBoard[new_op_move[0]] = self.get_opponent_player() # mock your best move.
-			my_new_move = testBoard.get_best_move(self._player)
-			if not my_new_move[0]: continue
-			if my_new_move[2] or (my_new_move[1] > my_best_move[1] and not new_op_move[2]):
-				board[ my_new_move[0]] = self._player
-				return
+		# would my move, put my opponent at an advantage?
+		if my_best_move[1] < op_best_move[1]:
+			for x in board.get_open_tiles():
+				# find a move that makes it better for me.
+				testBoard = Board(board)
+ 				# mock my move.
+				testBoard[x] = self._player
+				# get opponenents new best move
+				new_op_move = testBoard.get_best_move(self.get_opponent_player())
+				if not new_op_move[0]: continue
+				
+				# check if I can win afterwards.
+				testBoard[new_op_move[0]] = self.get_opponent_player() # mock your best move.
+				my_new_move = testBoard.get_best_move(self._player)
+				if not my_new_move[0]: continue
+
+				if my_new_move[2] or (new_op_move[1] < op_best_move[1] and not new_op_move[2]):
+					board[x] = self._player
+					return
 		
 		board[my_best_move[0]] = self._player
 		return
