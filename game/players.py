@@ -81,7 +81,7 @@ class Computer(Player):
 		# would my move, put my opponent at an advantage?
 		if my_best_move[1] < op_best_move[1]:
 			for x in board.get_open_tiles():
-				
+
 				# find a move that makes it better for me.
 				testBoard = Board(board)
 				testBoard[x] = self._player
@@ -95,7 +95,7 @@ class Computer(Player):
 				my_new_move = testBoard.get_best_move(self._player)
 				if not my_new_move[0]: continue
 
-				if my_new_move[2] or (new_op_move[1] < op_best_move[1] and not new_op_move[2]):
+				if my_new_move[2] or (my_new_move[1] > new_op_move[1] and not new_op_move[2]):
 					board[x] = self._player
 					return
 		
