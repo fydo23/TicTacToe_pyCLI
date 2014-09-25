@@ -11,3 +11,9 @@ HOW TO PLAY
 ===========
 
 To run the game, change into the folder containing this file and run `$ Python playTTT.py`
+
+AUTHORS
+============
+Fyodor Wolf
+Chris Farrell
+William Wilson
