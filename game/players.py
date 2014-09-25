@@ -81,16 +81,17 @@ class Computer(Player):
 		# would my move, put my opponent at an advantage?
 		if my_best_move[1] < op_best_move[1]:
 			for x in board.get_open_tiles():
+				
 				# find a move that makes it better for me.
 				testBoard = Board(board)
- 				# mock my move.
 				testBoard[x] = self._player
+
 				# get opponenents new best move
 				new_op_move = testBoard.get_best_move(self.get_opponent_player())
 				if not new_op_move[0]: continue
 				
 				# check if I can win afterwards.
-				testBoard[new_op_move[0]] = self.get_opponent_player() # mock your best move.
+				testBoard[new_op_move[0]] = self.get_opponent_player()
 				my_new_move = testBoard.get_best_move(self._player)
 				if not my_new_move[0]: continue
 
