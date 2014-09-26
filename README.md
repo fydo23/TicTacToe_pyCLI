@@ -16,6 +16,6 @@ This game also runs as computer vs. computer simulation if you run `$ Python pla
 
 AUTHORS
 ============
-Fyodor Wolf
-Chris Farrell
+Fyodor Wolf  
+Chris Farrell  
 William Wilson
